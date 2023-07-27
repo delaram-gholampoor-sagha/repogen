@@ -1,22 +1,22 @@
 package repogen
 
 type Generator interface {
-	Entity(entity any) (Entity, error)
+	EntityType(entity interface{}) (EntityType, error)
 }
 
-type Entity interface {
-	Method(name string) Method
+type EntityType interface {
+	MethodType(name string) MethodType
 }
 
-type Method interface {
+type MethodType interface {
 	Params() Returner
 }
 
 type Returner interface {
-	Returns() SQLBuilder
+	Build() QueryTypeBuilder
 }
 
-type SQLBuilder interface {
+type QueryTypeBuilder interface {
 	Select() SelectQuery
 	Insert() InsertQuery
 	Update() UpdateQuery
@@ -24,58 +24,58 @@ type SQLBuilder interface {
 }
 
 type SelectQuery interface {
-	Where() WhereClause
-	Limit() LimitClause
-	Offset() OffsetClause
-	OrderBy() OrderByClause
+	AddWhereClause() WhereClause
+	AddLimitClause() LimitClause
+	AddOffsetClause() OffsetClause
+	AddOrderByClause() OrderByClause
 }
 
 type InsertQuery interface {
 	Columns(columns ...string) InsertColumnsClause
-	Values(values ...any) InsertValuesClause
+	Values(values ...interface{}) InsertValuesClause
 }
 
 type InsertColumnsClause interface {
-	Values(values ...any) InsertValuesClause
+	Values(values ...interface{}) InsertValuesClause
 }
 
 type InsertValuesClause interface {
-	Generate()
+	BuildQuery()
 }
 
 type DeleteQuery interface {
-	Where() WhereClause
-	Limit() LimitClause
-	Offset() OffsetClause
+	AddWhereClause() WhereClause
+	AddLimitClause() LimitClause
+	AddOffsetClause() OffsetClause
 }
 
 type UpdateQuery interface {
-	Where() WhereClause
-	Limit() LimitClause
-	Offset() OffsetClause
-	Generate()
+	AddWhereClause() WhereClause
+	AddLimitClause() LimitClause
+	AddOffsetClause() OffsetClause
+	BuildQuery()
 }
 
 type WhereClause interface {
-	Limit() LimitClause
-	Offset() OffsetClause
-	OrderBy() OrderByClause
-	Generate()
+	AddLimitClause() LimitClause
+	AddOffsetClause() OffsetClause
+	AddOrderByClause() OrderByClause
+	BuildQuery()
 }
 
 type LimitClause interface {
-	Offset() OffsetClause
-	OrderBy() OrderByClause
-	Generate()
+	AddOffsetClause() OffsetClause
+	AddOrderByClause() OrderByClause
+	BuildQuery()
 }
 
 type OffsetClause interface {
-	OrderBy() OrderByClause
-	Generate()
+	AddOrderByClause() OrderByClause
+	BuildQuery()
 }
 
 type OrderByClause interface {
 	Asc(column string) OrderByClause
 	Desc(column string) OrderByClause
-	Generate()
+	BuildQuery()
 }
